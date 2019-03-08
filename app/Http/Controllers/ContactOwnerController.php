@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\PhoneBook;
+use App\Models\ContactOwner;
+use App\Http\Resources\ContactOwnerResource;
+use App\Http\Resources\ContactOwnersResource;
 use Illuminate\Http\Request;
 
 class ContactOwnerController extends Controller
@@ -14,7 +16,12 @@ class ContactOwnerController extends Controller
      */
     public function index()
     {
-        //
+        ContactOwnersResource::withoutWrapping();
+        return new ContactOwnersResource(ContactOwner::with(
+            'homeAddresses',
+            'mailAddresses',
+            'phoneNumbers'
+        )->paginate());
     }
 
     /**
@@ -41,21 +48,22 @@ class ContactOwnerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\PhoneBook  $phoneBook
+     * @param  \App\Models\ContactOwner  $contactOwner
      * @return \Illuminate\Http\Response
      */
-    public function show(PhoneBook $phoneBook)
+    public function show(ContactOwner $contactOwner)
     {
-        //
+        ContactOwnerResource::withoutWrapping();
+        return new ContactOwnerResource($contactOwner);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\PhoneBook  $phoneBook
+     * @param  \App\Models\ContactOwner  $contactOwner
      * @return \Illuminate\Http\Response
      */
-    public function edit(PhoneBook $phoneBook)
+    public function edit(ContactOwner $contactOwner)
     {
         //
     }
@@ -64,10 +72,10 @@ class ContactOwnerController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\PhoneBook  $phoneBook
+     * @param  \App\Models\ContactOwner  $contactOwner
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PhoneBook $phoneBook)
+    public function update(Request $request, ContactOwner $contactOwner)
     {
         //
     }
@@ -75,10 +83,10 @@ class ContactOwnerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\PhoneBook  $phoneBook
+     * @param  \App\Models\ContactOwner  $contactOwner
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PhoneBook $phoneBook)
+    public function destroy(ContactOwner $contactOwner)
     {
         //
     }

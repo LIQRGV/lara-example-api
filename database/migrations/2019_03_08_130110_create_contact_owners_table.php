@@ -15,6 +15,7 @@ class CreateContactOwnersTable extends Migration
     {
         Schema::create('contact_owners', function (Blueprint $table) {
             $table->integer('id')->unique();
+            $table->string('full_name');
             $table->timestamps();
         });
     }

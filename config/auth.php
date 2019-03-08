@@ -42,9 +42,8 @@ return [
         ],
 
         'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
-            'hash' => false,
+            'driver' => 'header_guard',
+            'provider' => 'header_provider',
         ],
     ],
 
@@ -69,6 +68,9 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Model\ContactOwner::class,
+        ],
+        'header_provider' => [
+            'driver' => 'header_user_provider',
         ],
 
         // 'users' => [

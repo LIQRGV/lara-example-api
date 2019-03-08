@@ -22,5 +22,18 @@ class ContactOwner extends Authenticatable
     public function phoneNumbers() {
         return $this->hasMany('App\Models\PhoneNumber');
     }
+
+    public function delete() {
+        foreach($this->homeAddresses as $homeAddressObject) {
+            $homeAddressObject->delete();
+        }
+        foreach($this->mailAddresses as $mailAddressObject) {
+            $mailAddressObject->delete();
+        }
+        foreach($this->phoneNumbers as $phoneNumberObject) {
+            $phoneNumberObject->delete();
+        }
+        parent::delete();
+    }
 }
 

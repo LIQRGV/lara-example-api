@@ -1,0 +1,141 @@
+{
+	"info": {
+		"_postman_id": "d3992eae-9de5-416c-a863-bc5edbeb14dc",
+		"name": "Example-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:8000/api/contacts/12",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "X-User-Info",
+						"value": "{\"id\": \"12\", \"full_name\": \"John Doe\"}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/vnd.api+json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\": \"contact_owner\",\n    \"id\": \"12\",\n    \"attributes\": {\n        \"full_name\": \"Another Lew Kuhn PhD No.2\"\n    },\n    \"relationships\": {\n        \"home_address\": {\n            \"data\": [\n                {\n                    \"type\": \"home_address\",\n                    \"attributes\": {\n                        \"home_address\": \"177 New Jaqueline Rue\\nBergnaumberg, NM 33350-2469\"\n                    }\n                }\n            ]\n        }\n    }\n}"
+				},
+				"url": {
+					"raw": "localhost:8000/api/contacts/12",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"contacts",
+						"12"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/api/contacts/15",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-User-Info",
+						"value": "{\"id\": \"123123\", \"full_name\": \"John Doe\"}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/vnd.api+json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\": \"contact_owner\",\n    \"id\": \"15\",\n    \"attributes\": {\n        \"full_name\": \"Armando Jakubowski\"\n    },\n    \"relationships\": {\n        \"mail_address\": {\n            \"data\": [\n                {\n                    \"type\": \"mail_address\",\n                    \"attributes\": {\n                        \"email\": \"bonnie68@yahoo.com\"\n                    }\n                }\n            ]\n        },\n        \"phone_number\": {\n            \"data\": [\n                {\n                    \"type\": \"phone_number\",\n                    \"attributes\": {\n                        \"phone_number\": \"325-951-9986 x9589\"\n                    }\n                }\n            ]\n        }\n    }\n}"
+				},
+				"url": {
+					"raw": "localhost:8000/api/contacts/15",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"contacts",
+						"15"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/api/contacts/6",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "X-User-Info",
+						"value": "{\"id\": \"6\", \"full_name\": \"John Doe\"}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/vnd.api+json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\": \"contact_owner\",\n    \"id\": \"13\",\n    \"attributes\": {\n        \"full_name\": \"Another Lew Kuhn PhD\"\n    },\n    \"relationships\": {\n        \"home_address\": {\n            \"data\": [\n                {\n                    \"type\": \"home_address\",\n                    \"id\": \"2\",\n                    \"attributes\": {\n                        \"home_address\": \"177 Jaqueline Rue\\nBergnaumberg, NM 33350-2469\"\n                    }\n                },\n                {\n                    \"type\": \"home_address\",\n                    \"id\": \"5\",\n                    \"attributes\": {\n                        \"home_address\": \"8080 Ferry Pike Apt. 594\\nQuigleytown, MS 33519\"\n                    }\n                },\n                {\n                    \"type\": \"home_address\",\n                    \"id\": \"6\",\n                    \"attributes\": {\n                        \"home_address\": \"6497 Zulauf Valleys\\nNorth Rosannabury, NJ 18247\"\n                    }\n                },\n                {\n                    \"type\": \"home_address\",\n                    \"id\": \"9\",\n                    \"attributes\": {\n                        \"home_address\": \"9111 Koepp Park Apt. 184\\nMorissettefort, KY 90484\"\n                    }\n                }\n            ]\n        },\n        \"mail_address\": {\n            \"data\": [\n                {\n                    \"type\": \"mail_address\",\n                    \"id\": \"1\",\n                    \"attributes\": {\n                        \"email\": \"schneider.abigail@yahoo.com\"\n                    }\n                }\n            ]\n        },\n        \"phone_number\": {\n            \"data\": [\n                {\n                    \"type\": \"phone_number\",\n                    \"id\": \"2\",\n                    \"attributes\": {\n                        \"phone_number\": \"1-258-692-3588 x5190\"\n                    }\n                },\n                {\n                    \"type\": \"phone_number\",\n                    \"id\": \"4\",\n                    \"attributes\": {\n                        \"phone_number\": \"436-391-3644 x332\"\n                    }\n                }\n            ]\n        }\n    }\n}"
+				},
+				"url": {
+					"raw": "localhost:8000/api/contacts/6",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"contacts",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/api/contacts/12",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-User-Info",
+						"value": "{\"id\": \"12\", \"full_name\": \"John Doe\"}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/vnd.api+json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8000/api/contacts/12",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"contacts",
+						"12"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

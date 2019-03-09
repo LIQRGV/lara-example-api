@@ -64,7 +64,11 @@ class ContactOwnerController extends Controller
      */
     public function show(ContactOwner $contactOwner)
     {
-        return new ContactOwnerResource($contactOwner);
+        if(\Auth::user()->can('view', $contactOwner)) {
+            return new ContactOwnerResource($contactOwner);
+        } else {
+            return response(null, 401);
+        }
     }
 
     /**
@@ -76,27 +80,31 @@ class ContactOwnerController extends Controller
      */
     public function update(Request $request, ContactOwner $contactOwner)
     {
-        $jsonRequest = $request->json();
-        $jsonId = $jsonRequest->get('id');
-        if ($this->isNotContactOwner($request) || $this->idNotMatch($jsonId, $contactOwner->id)) {
-            abort(400);
+        if(\Auth::user()->can('update', $contactOwner)) {
+            $jsonRequest = $request->json();
+            $jsonId = $jsonRequest->get('id');
+            if ($this->isNotContactOwner($request) || $this->idNotMatch($jsonId, $contactOwner->id)) {
+                abort(400);
+            }
+
+            $mainDatum = [
+                'type' => $jsonRequest->get('type'),
+                'id' => $jsonId,
+                'attributes' => $jsonRequest->get('attributes'),
+            ];
+
+            $contactOwner = ResourceHelper::toResource($mainDatum);
+            $contactOwner->exists = true;
+
+            \DB::transaction(function() use ($contactOwner, $jsonRequest) {
+                $contactOwner->save();
+                $contactOwner = $this->includeRelationship($contactOwner, $jsonRequest->get('relationships'));
+            });
+
+            return new ContactOwnerResource($contactOwner);
+        } else {
+            return response(null, 401);
         }
-
-        $mainDatum = [
-            'type' => $jsonRequest->get('type'),
-            'id' => $jsonId,
-            'attributes' => $jsonRequest->get('attributes'),
-        ];
-
-        $contactOwner = ResourceHelper::toResource($mainDatum);
-        $contactOwner->exists = true;
-
-        \DB::transaction(function() use ($contactOwner, $jsonRequest) {
-            $contactOwner->save();
-            $contactOwner = $this->includeRelationship($contactOwner, $jsonRequest->get('relationships'));
-        });
-
-        return new ContactOwnerResource($contactOwner);
     }
 
     /**
@@ -107,9 +115,13 @@ class ContactOwnerController extends Controller
      */
     public function destroy(ContactOwner $contactOwner)
     {
-        $contactOwner->delete();
+        if(\Auth::user()->can('delete', $contactOwner)) {
+            $contactOwner->delete();
 
-        return response(null, 204);
+            return response(null, 204);
+        } else {
+            return response(null, 401);
+        }
     }
 
     private function isNotContactOwner($request) {

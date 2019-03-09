@@ -17,21 +17,21 @@ class ContactOwnerRelationshipResource extends JsonResource
         return [
             'home_address' => [
                 'links' => [
-                    'self'    => route('contacts.relationships.home_address', ['contact' => $this->id]),
+                    'self' => route('contacts.relationships.home_address', ['contact' => $this->id]),
                 ],
-                'data'  => new HomeAddressesResource($this->homeAddresses),
+                'data' => new HomeAddressesResource($this->homeAddresses),
             ],
             'mail_address' => [
                 'links' => [
-                    'self'    => route('contacts.relationships.mail_address', ['contact' => $this->id]),
+                    'self' => route('contacts.relationships.mail_address', ['contact' => $this->id]),
                 ],
-                'data'  => new MailAddressesResource($this->MailAddresses),
+                'data' => new MailAddressesResource($this->MailAddresses),
             ],
             'phone_number' => [
                 'links' => [
-                    'self'    => route('contacts.relationships.phone_number', ['contact' => $this->id]),
+                    'self' => route('contacts.relationships.phone_number', ['contact' => $this->id]),
                 ],
-                'data'  => new PhoneNumbersResource($this->phoneNumbers),
+                'data' => new PhoneNumbersResource($this->phoneNumbers),
             ],
         ];
 

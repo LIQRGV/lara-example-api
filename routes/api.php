@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 
+//use App\Http\Controllers\ContactOwnerController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,22 +15,26 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->group(
+Route::middleware(['auth:api', 'content-type'])->group(
     function() {
         Route::get('/user', function (Request $request) {
             return $request->user();
         });
-        Route::resource('contacts', 'ContactOwnerController');
+        Route::resource('contacts', 'ContactOwnerController', ['except' => 'store']);
+        Route::post('contacts/{id}', [
+            'uses' => ContactOwnerController::class . '@store',
+            'as' => 'contacts.store',
+        ]);
         Route::get('contacts/{contact}/relationships/home_address', [
-            'uses' => \App\Http\Controllers\ContactOwnerController::class . '@home_address',
+            'uses' => ContactOwnerController::class . '@home_address',
             'as' => 'contacts.relationships.home_address',
         ]);
         Route::get('contacts/{contact}/relationships/mail_address', [
-            'uses' => \App\Http\Controllers\ContactOwnerController::class . '@mail_address',
+            'uses' => ContactOwnerController::class . '@mail_address',
             'as' => 'contacts.relationships.mail_address',
         ]);
         Route::get('contacts/{contact}/relationships/phone_number', [
-            'uses' => \App\Http\Controllers\ContactOwnerController::class . '@phone_number',
+            'uses' => ContactOwnerController::class . '@phone_number',
             'as' => 'contacts.relationships.phone_number',
         ]);
     }

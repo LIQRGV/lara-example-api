@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class HomeAddress extends Model
 {
     protected $fillable = [
-        'home_address',
+        'contact_owner_id', 'home_address',
     ];
 }

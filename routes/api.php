@@ -21,7 +21,7 @@ Route::middleware(['auth:api', 'content-type'])->group(
             return $request->user();
         });
         Route::resource('contacts', 'ContactOwnerController', ['except' => 'store']);
-        Route::post('contacts/{contactOwner}', [
+        Route::post('contacts/{id}', [
             'uses' => ContactOwnerController::class . '@store',
             'as' => 'contacts.store',
         ]);

@@ -21,7 +21,12 @@ class ResourceHelper
         $classToInstantiate = $resourceTypeToMap[$datumType];
         $obj = new $classToInstantiate;
         if(isset($datumToConvert['id'])) {
-            $obj->id = $datumToConvert['id'];
+            $maybeObj = $classToInstantiate::find($datumToConvert['id']);
+            if(null != $maybeObj) {
+                $obj = $maybeObj;
+            } else {
+                $obj->id = $datumToConvert['id'];
+            }
         }
         $obj->forceFill($datumToConvert['attributes']);
 

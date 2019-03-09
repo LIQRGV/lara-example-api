@@ -32,12 +32,12 @@ class ContactOwnerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, ContactOwner $contactOwner)
+    public function store(Request $request, $id)
     {
         $jsonRequest = $request->json();
         $jsonId = $jsonRequest->get('id');
-        if ($this->isNotContactOwner($request) || $this->idNotMatch($jsonId, $contactOwner->id)) {
-            abort(400);
+        if ($this->isNotContactOwner($request) || $this->idNotMatch($jsonId, $id)) {
+            return response(null,400);
         }
 
         $mainDatum = [
@@ -50,7 +50,9 @@ class ContactOwnerController extends Controller
 
         \DB::transaction(function() use ($contactOwner, $jsonRequest) {
             $contactOwner->save();
-            $contactOwner = $this->includeRelationship($contactOwner, $jsonRequest->get('relationships'));
+            if(!empty($jsonRequest->get('relationships'))) {
+                $contactOwner = $this->includeRelationship($contactOwner, $jsonRequest->get('relationships'));
+            }
         });
 
         return new ContactOwnerResource($contactOwner);
@@ -84,7 +86,7 @@ class ContactOwnerController extends Controller
             $jsonRequest = $request->json();
             $jsonId = $jsonRequest->get('id');
             if ($this->isNotContactOwner($request) || $this->idNotMatch($jsonId, $contactOwner->id)) {
-                abort(400);
+                return response(null,400);
             }
 
             $mainDatum = [
@@ -147,10 +149,9 @@ class ContactOwnerController extends Controller
             $type = $relation['type'];
             $relationshipName = $mapRelationshipName[$type];
 
-            $relation['attributes']['id'] = $relation['id'];
             $relation['attributes']['contact_owner_id'] = $contactOwner->id;
-
-            $contactOwner->{$relationshipName}()->createMany([$relation['attributes']]);
+            $obj = ResourceHelper::toResource($relation);
+            $obj->save();
         }
 
         return $contactOwner;

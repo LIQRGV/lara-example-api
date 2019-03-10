@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContactOwner;
+use App\Http\Services\ContactOwnerService;
 use App\Http\Resources\ContactOwnerResource;
 use App\Http\Resources\ContactOwnersResource;
 use Illuminate\Http\Request;
@@ -11,19 +12,23 @@ use App\Helpers\ResourceHelper;
 
 class ContactOwnerController extends Controller
 {
+    private $contactOwnerService;
+
+    public function __construct(ContactOwnerService $contactOwnerService) {
+        $this->contactOwnerService = $contactOwnerService;
+    }
+
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        ContactOwnersResource::withoutWrapping();
-        return new ContactOwnersResource(ContactOwner::with(
-            'homeAddresses',
-            'mailAddresses',
-            'phoneNumbers'
-        )->paginate());
+        $rawFilter = $request->query->get('filter');
+        $ordering = $request->query->get('orderBy');
+        return $this->contactOwnerService->index($rawFilter, $ordering);
     }
 
     /**
@@ -40,22 +45,7 @@ class ContactOwnerController extends Controller
             return response(null,400);
         }
 
-        $mainDatum = [
-            'type' => $jsonRequest->get('type'),
-            'id' => $jsonId,
-            'attributes' => $jsonRequest->get('attributes'),
-        ];
-
-        $contactOwner = ResourceHelper::toResource($mainDatum);
-
-        \DB::transaction(function() use ($contactOwner, $jsonRequest) {
-            $contactOwner->save();
-            if(!empty($jsonRequest->get('relationships'))) {
-                $contactOwner = $this->includeRelationship($contactOwner, $jsonRequest->get('relationships'));
-            }
-        });
-
-        return new ContactOwnerResource($contactOwner);
+        return $this->contactOwnerService->store($jsonRequest, $jsonId);
     }
 
     /**
@@ -67,7 +57,7 @@ class ContactOwnerController extends Controller
     public function show(ContactOwner $contactOwner)
     {
         if(\Auth::user()->can('view', $contactOwner)) {
-            return new ContactOwnerResource($contactOwner);
+            return $this->contactOwnerService->show($contactOwner);
         } else {
             return response(null, 401);
         }
@@ -89,21 +79,7 @@ class ContactOwnerController extends Controller
                 return response(null,400);
             }
 
-            $mainDatum = [
-                'type' => $jsonRequest->get('type'),
-                'id' => $jsonId,
-                'attributes' => $jsonRequest->get('attributes'),
-            ];
-
-            $contactOwner = ResourceHelper::toResource($mainDatum);
-            $contactOwner->exists = true;
-
-            \DB::transaction(function() use ($contactOwner, $jsonRequest) {
-                $contactOwner->save();
-                $contactOwner = $this->includeRelationship($contactOwner, $jsonRequest->get('relationships'));
-            });
-
-            return new ContactOwnerResource($contactOwner);
+            return $this->contactOwnerService->update($jsonRequest, $jsonId);
         } else {
             return response(null, 401);
         }
@@ -132,28 +108,5 @@ class ContactOwnerController extends Controller
 
     private function idNotMatch($id, $otherId) {
         return $id != $otherId;
-    }
-
-    private function includeRelationship($contactOwner, $relationshipArray) {
-        $allRelation = array_reduce($relationshipArray, function($current, $reducedValue) {
-            return array_merge($current, $reducedValue['data']);
-        }, array());
-
-        $mapRelationshipName = [
-            'home_address' => 'homeAddresses',
-            'mail_address' => 'mailAddresses',
-            'phone_number' => 'phoneNumbers',
-        ];
-
-        foreach($allRelation as $relation) {
-            $type = $relation['type'];
-            $relationshipName = $mapRelationshipName[$type];
-
-            $relation['attributes']['contact_owner_id'] = $contactOwner->id;
-            $obj = ResourceHelper::toResource($relation);
-            $obj->save();
-        }
-
-        return $contactOwner;
     }
 }
